@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifa Oficial — Inflable Acuático</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --blue1:#0552b5; --blue2:#0a84ff; --blue3:#00c6fb;
+  --navy:#0a2a6e; --gold:#ffe566; --green:#0d9e60;
+  --orange:#c97800; --red:#d92b2b;
+}
+body {
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(160deg,#0a2a6e 0%,#0552b5 50%,#0a84ff 100%);
+  min-height:100vh; padding:14px;
+}
+
+/* HEADER */
+.header {
+  background:linear-gradient(135deg,var(--navy),var(--blue1),var(--blue2));
+  border-radius:22px 22px 0 0;
+  padding:26px 20px 18px;
+  text-align:center;
+  position:relative; overflow:hidden;
+}
+.header-border {
+  height:5px;
+  background:linear-gradient(90deg,#ffe566,#ffb347,#ff7eb3,#7ed4fd,#ffe566);
+}
+.header-emoji { font-size:38px; display:block; margin-bottom:5px; }
+.header-title {
+  font-family:'Righteous',cursive; font-size:25px; color:#fff;
+  line-height:1.1; text-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.header-title span { color:var(--gold); }
+.header-sub { margin-top:6px; font-size:11px; color:rgba(255,255,255,.8); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+
+/* PRIZE STRIP */
+.prize-strip {
+  background:linear-gradient(135deg,#fffbea,#fff3cc);
+  border-bottom:1.5px solid #ffd97a;
+  padding:10px 16px;
+  display:flex; flex-direction:column; gap:5px;
+}
+.prize-row { display:flex; align-items:center; gap:8px; }
+.prize-badge {
+  background:linear-gradient(135deg,var(--gold),#ffb347);
+  color:#5a3a00; border-radius:20px;
+  padding:3px 12px; font-size:12px; font-weight:900; white-space:nowrap;
+}
+.prize-text { font-size:12px; color:#7a5800; font-weight:700; }
+
+/* STATS */
+.stats-bar {
+  display:flex; background:#f0f9ff;
+  border-bottom:1.5px solid #b3d9f7; padding:11px 8px; gap:0;
+}
+.stat-item { flex:1; text-align:center; }
+.stat-value { font-size:19px; font-weight:900; color:var(--blue2); line-height:1; }
+.stat-value.vg { color:var(--green); }
+.stat-value.vo { color:var(--orange); }
+.stat-label { font-size:9px; color:#5a8bbf; font-weight:700; text-transform:uppercase; letter-spacing:.3px; margin-top:2px; }
+.stat-div { width:1px; background:#b3d9f7; }
+
+/* CONTROLS */
+.controls {
+  background:#fff; padding:10px 14px;
+  display:flex; gap:7px; align-items:center;
+  border-bottom:1px solid #ddeeff;
+}
+.search-box {
+  flex:1; padding:8px 11px;
+  border:1.5px solid #b3d9f7; border-radius:10px;
+  font-family:'Nunito',sans-serif; font-size:13px; color:#0552b5; outline:none;
+}
+.search-box:focus { border-color:var(--blue2); }
+.f-btn {
+  padding:7px 10px; border-radius:9px; font-size:11px; font-weight:800;
+  border:1.5px solid #b3d9f7; cursor:pointer;
+  font-family:'Nunito',sans-serif; transition:all .15s;
+  background:#fff; color:#5a8bbf;
+}
+.f-btn.active { background:var(--blue2); color:#fff; border-color:var(--blue2); }
+.f-btn:hover:not(.active) { background:#f0f9ff; }
+
+/* PAGE CARD */
+.page-card { background:#fff; border-radius:0 0 22px 22px; overflow:hidden; }
+
+/* GRID SECTION */
+.grid-section { padding:14px 12px 4px; }
+.section-title {
+  font-size:12px; font-weight:900; color:var(--blue1);
+  text-transform:uppercase; letter-spacing:.8px;
+  margin-bottom:10px; display:flex; align-items:center; gap:6px;
+}
+.section-title::after {
+  content:''; flex:1; height:1.5px;
+  background:linear-gradient(90deg,var(--blue2),transparent);
+  border-radius:2px;
+}
+
+/* PAIRED TICKET GRID — 2 columns */
+.pairs-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  padding-bottom:12px;
+}
+
+.pair-ticket {
+  border-radius:12px;
+  border:2px solid #ddeeff;
+  background:#f8fcff;
+  cursor:pointer;
+  transition:all .18s;
+  padding:9px 10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  position:relative;
+  min-height:52px;
+}
+.pair-ticket:hover:not(.taken) {
+  border-color:var(--blue2); background:#e8f4ff;
+  transform:scale(1.02);
+  box-shadow:0 4px 14px rgba(10,132,255,.2);
+}
+.pair-ticket.taken {
+  background:linear-gradient(135deg,#e6faf0,#d0f5e4);
+  border-color:#4dc88a; cursor:default;
+}
+.pair-ticket.hidden { display:none !important; }
+
+/* pair numbers pill */
+.pair-nums {
+  display:flex; flex-direction:column; align-items:center;
+  background:linear-gradient(135deg,var(--blue2),var(--blue1));
+  border-radius:8px; padding:4px 7px;
+  min-width:40px; flex-shrink:0;
+}
+.pair-ticket.taken .pair-nums {
+  background:linear-gradient(135deg,#0a7c48,var(--green));
+}
+.pair-n {
+  font-size:12px; font-weight:900; color:#fff; line-height:1.15;
+}
+.pair-sep { font-size:8px; color:rgba(255,255,255,.6); font-weight:700; line-height:1; }
+
+/* pair info */
+.pair-info { flex:1; min-width:0; }
+.pair-name {
+  font-size:11px; font-weight:800; color:var(--blue1);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.pair-ticket.taken .pair-name { color:#0a7c48; }
+.pair-free-label {
+  font-size:10px; font-weight:800; color:var(--blue2);
+  background:#e8f4ff; border-radius:6px;
+  padding:2px 6px; display:inline-block; margin-top:2px;
+}
+.pair-paid-badge {
+  font-size:9px; font-weight:800; border-radius:20px;
+  padding:2px 7px; margin-top:2px; display:inline-block;
+}
+.paid-si { background:#e6faf0; color:var(--green); border:1px solid #a3e8c5; }
+.paid-no { background:#fff4e5; color:var(--orange); border:1px solid #ffd080; }
+
+/* status dot */
+.pair-status { font-size:13px; position:absolute; top:5px; right:7px; }
+
+/* LIST */
+.list-section { padding:10px 12px 0; border-top:1px solid #ddeeff; }
+.p-row {
+  display:flex; align-items:center; gap:7px;
+  padding:8px 10px; border-radius:10px;
+  margin-bottom:5px; background:#f8fcff;
+  border:1px solid #ddeeff;
+}
+.p-nums {
+  display:flex; flex-direction:column; align-items:center;
+  background:linear-gradient(135deg,var(--blue2),var(--blue1));
+  border-radius:8px; padding:3px 7px; min-width:38px; flex-shrink:0;
+}
+.p-n { font-size:11px; font-weight:900; color:#fff; line-height:1.2; }
+.p-sep { font-size:7px; color:rgba(255,255,255,.6); }
+.p-info { flex:1; min-width:0; }
+.p-name { font-size:12px; font-weight:800; color:var(--blue1); }
+.p-phone { font-size:10px; color:#5a8bbf; font-weight:600; }
+.p-paid {
+  font-size:9px; font-weight:800; border-radius:20px;
+  padding:3px 8px; flex-shrink:0;
+}
+.p-method {
+  font-size:10px; font-weight:700; background:#eef4ff;
+  color:#2957b5; border-radius:7px; padding:3px 7px;
+  border:1px solid #c5d9f7; flex-shrink:0;
+}
+.p-del {
+  background:none; border:none; cursor:pointer;
+  font-size:14px; color:#d0a0a0; padding:2px 3px;
+  border-radius:6px; transition:color .15s;
+}
+.p-del:hover { color:var(--red); }
+.empty-msg {
+  padding:18px; text-align:center;
+  font-size:13px; color:#a0bcd8; font-weight:700;
+}
+
+/* EXPORT BAR */
+.export-bar {
+  background:#fff; padding:10px 12px;
+  display:flex; gap:7px; border-top:1px solid #ddeeff;
+}
+.btn-exp {
+  flex:1; padding:10px; border-radius:10px;
+  border:1.5px solid var(--blue1);
+  background:linear-gradient(135deg,var(--navy),var(--blue1));
+  color:#fff; font-family:'Nunito',sans-serif;
+  font-size:12px; font-weight:800; cursor:pointer;
+  transition:all .15s; display:flex; align-items:center;
+  justify-content:center; gap:5px;
+}
+.btn-exp:hover { transform:scale(1.02); box-shadow:0 4px 14px rgba(5,82,181,.3); }
+.btn-rst {
+  flex:0.55; padding:10px; border-radius:10px;
+  border:1.5px solid #0a7c48;
+  background:linear-gradient(135deg,#0a7c48,var(--green));
+  color:#fff; font-family:'Nunito',sans-serif;
+  font-size:12px; font-weight:800; cursor:pointer; transition:all .15s;
+}
+.btn-rst:hover { transform:scale(1.02); }
+
+/* FOOTER */
+.footer-card {
+  background:linear-gradient(135deg,var(--navy),var(--blue1),var(--blue2));
+  padding:16px 18px; text-align:center;
+}
+.footer-thanks { font-family:'Righteous',cursive; font-size:19px; color:var(--gold); margin-bottom:7px; }
+.footer-wp {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.25);
+  border-radius:40px; padding:7px 18px;
+  color:#fff; font-size:16px; font-weight:900; letter-spacing:1px;
+}
+.footer-tags { margin-top:10px; font-size:9px; color:rgba(255,255,255,.5); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+
+/* MODAL */
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(5,30,90,.78); z-index:999;
+  align-items:center; justify-content:center; padding:16px;
+}
+.modal-overlay.open { display:flex; }
+.modal {
+  background:#fff; border-radius:20px;
+  width:100%; max-width:340px; overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  animation:popIn .2s ease;
+}
+@keyframes popIn { from{transform:scale(.88);opacity:0} to{transform:scale(1);opacity:1} }
+.modal-hdr {
+  background:linear-gradient(135deg,var(--blue1),var(--blue2));
+  padding:18px 20px; text-align:center;
+}
+.modal-pair {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.modal-num {
+  font-family:'Righteous',cursive; font-size:38px; color:var(--gold);
+  line-height:1; text-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.modal-dash { font-size:22px; color:rgba(255,255,255,.5); font-weight:900; }
+.modal-label { font-size:11px; color:rgba(255,255,255,.8); font-weight:700; text-transform:uppercase; margin-top:3px; }
+.modal-body { padding:16px 16px 8px; }
+.m-field { margin-bottom:12px; }
+.m-lbl {
+  display:block; font-size:11px; font-weight:800;
+  color:var(--blue1); text-transform:uppercase;
+  letter-spacing:.6px; margin-bottom:4px;
+}
+.m-input, .m-select {
+  width:100%; padding:9px 12px;
+  border:1.5px solid #b3d9f7; border-radius:10px;
+  font-family:'Nunito',sans-serif; font-size:13px;
+  color:#0552b5; outline:none; background:#f8fcff; transition:border .15s;
+}
+.m-input:focus, .m-select:focus { border-color:var(--blue2); background:#fff; }
+.radio-row { display:flex; gap:7px; }
+.radio-btn {
+  flex:1; padding:9px 6px; border:1.5px solid #b3d9f7;
+  border-radius:10px; text-align:center; cursor:pointer;
+  font-size:11px; font-weight:800; color:#5a8bbf;
+  transition:all .15s; user-select:none;
+}
+.radio-btn.sel-si { background:#e6faf0; color:var(--green); border-color:#4dc88a; }
+.radio-btn.sel-no { background:#fff4e5; color:var(--orange); border-color:#ffd080; }
+.modal-ftr { padding:0 16px 16px; display:flex; gap:7px; }
+.btn-cancel {
+  flex:1; padding:10px; border-radius:10px;
+  border:1.5px solid #b3d9f7; background:#fff;
+  color:#5a8bbf; font-family:'Nunito',sans-serif;
+  font-size:13px; font-weight:800; cursor:pointer; transition:all .15s;
+}
+.btn-cancel:hover { background:#f0f9ff; }
+.btn-reg {
+  flex:2; padding:10px; border-radius:10px; border:none;
+  background:linear-gradient(135deg,var(--blue1),var(--blue2));
+  color:#fff; font-family:'Nunito',sans-serif;
+  font-size:13px; font-weight:900; cursor:pointer;
+  box-shadow:0 4px 14px rgba(10,132,255,.3); transition:all .15s;
+}
+.btn-reg:hover { transform:scale(1.02); }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:22px; left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:var(--navy); color:#fff;
+  padding:11px 20px; border-radius:30px;
+  font-size:13px; font-weight:800; z-index:9999;
+  transition:transform .3s ease; white-space:nowrap;
+  box-shadow:0 6px 20px rgba(0,0,0,.3);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+@media print {
+  body { background:white !important; padding:0 !important; }
+  .controls,.export-bar,.modal-overlay,.toast { display:none !important; }
+  .page-card,.header { border-radius:0 !important; }
+  .pair-ticket { break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-pair">
+        <div class="modal-num" id="m-n1">01</div>
+        <div class="modal-dash">—</div>
+        <div class="modal-num" id="m-n2">51</div>
+      </div>
+      <div class="modal-label">🎟️ Boleto — 2 oportunidades de ganar</div>
+    </div>
+    <div class="modal-body">
+      <div class="m-field">
+        <label class="m-lbl">👤 Nombre completo</label>
+        <input class="m-input" id="m-name" type="text" placeholder="Ej: Ana García Martínez" autocomplete="off">
+      </div>
+      <div class="m-field">
+        <label class="m-lbl">📱 Teléfono</label>
+        <input class="m-input" id="m-phone" type="tel" placeholder="Ej: 8661234567" maxlength="10">
+      </div>
+      <div class="m-field">
+        <label class="m-lbl">💰 ¿Ya pagó?</label>
+        <div class="radio-row">
+          <div class="radio-btn" id="r-si" onclick="selPago('si')">✓ Sí pagó</div>
+          <div class="radio-btn" id="r-no" onclick="selPago('no')">⏳ Pendiente</div>
+        </div>
+      </div>
+      <div class="m-field" id="method-f" style="display:none">
+        <label class="m-lbl">💳 Método de pago</label>
+        <select class="m-select" id="m-method">
+          <option value="Efectivo">Efectivo 💵</option>
+          <option value="Transferencia">Transferencia 📲</option>
+          <option value="OXXO">OXXO 🏪</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-reg" onclick="registerTicket()">🎟️ Registrar Boleto</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div style="max-width:520px;margin:0 auto;">
+
+  <div class="header">
+    <span class="header-emoji">🎟️🌊🎉</span>
+    <div class="header-title">RIFA OFICIAL<br><span>INFLABLE ACUÁTICO</span></div>
+    <div class="header-sub" style="margin-top:6px;font-size:12px;color:var(--gold);font-weight:800;">🥩 Carne Asada + 24 de Cerveza Opcional 🍺</div>
+    <div class="header-sub" style="margin-top:3px;">📋 Control de Participantes y Pagos</div>
+  </div>
+  <div class="header-border"></div>
+
+  <div class="page-card">
+
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value" id="s-total">0</div>
+        <div class="stat-label">Vendidos</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-item">
+        <div class="stat-value vg" id="s-paid">0</div>
+        <div class="stat-label">Pagados</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-item">
+        <div class="stat-value vo" id="s-pend">0</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-item">
+        <div class="stat-value" id="s-free">50</div>
+        <div class="stat-label">Disponibles</div>
+      </div>
+    </div>
+
+    <!-- INFO STRIP -->
+    <div style="background:#f0f9ff;border-bottom:1px solid #ddeeff;padding:8px 16px;font-size:11px;color:#3a6ea8;font-weight:700;display:flex;align-items:center;gap:6px;">
+      👑 <span>Cada boleto tiene <b>2 números simultáneos</b> — ¡doble oportunidad de ganar!</span>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <input class="search-box" id="search-in" type="text" placeholder="🔍 Buscar número o nombre..." oninput="filterTickets()">
+      <button class="f-btn active" id="f-all" onclick="setFilter('all')">Todos</button>
+      <button class="f-btn" id="f-free" onclick="setFilter('free')">Libres</button>
+      <button class="f-btn" id="f-taken" onclick="setFilter('taken')">Tomados</button>
+    </div>
+
+    <!-- TICKET GRID -->
+    <div class="grid-section">
+      <div class="section-title">🎟️ Los 50 Boletos</div>
+      <div class="pairs-grid" id="pairs-grid"></div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="export-bar">
+      <button class="btn-exp" onclick="window.print()">🖨️ Generar PDF / Imprimir</button>
+      <button class="btn-rst" onclick="resetAll()">🔄 Reiniciar</button>
+    </div>
+
+    <!-- PARTICIPANT LIST -->
+    <div class="list-section">
+      <div class="section-title">📋 Lista de Participantes</div>
+      <div id="p-list"><div class="empty-msg">Sin participantes aún.<br>¡Toca un boleto para registrar!</div></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-card">
+      <div class="footer-thanks">¡Gracias por participar! 🍀</div>
+      <div class="footer-wp">📱 866 650 8779</div>
+      <div class="footer-tags">Verano ◆ Diversión ◆ Familia ◆ Carnes Asadas ◆ Amigos</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// 50 pairs: [a, b]
+const PAIRS = Array.from({length:50}, (_,i) => {
+  const a = String(i+1).padStart(2,'0');
+  const b = String((i+51)%100).padStart(2,'0');
+  return [a, b];
+});
+
+let tickets = {};       // key = index 0-49
+let currentIdx = null;
+let paidSel = null;
+let filterMode = 'all';
+
+function init() { renderGrid(); updateStats(); renderList(); }
+
+function renderGrid() {
+  const grid = document.getElementById('pairs-grid');
+  grid.innerHTML = '';
+  PAIRS.forEach(([a,b], idx) => {
+    const d = tickets[idx];
+    const taken = !!d;
+    const div = document.createElement('div');
+    div.className = 'pair-ticket' + (taken ? ' taken' : '');
+    div.id = 'pt-' + idx;
+    if (!taken) div.onclick = () => openModal(idx);
+    div.innerHTML = `
+      <div class="pair-nums">
+        <span class="pair-n">${a}</span>
+        <span class="pair-sep">—</span>
+        <span class="pair-n">${b}</span>
+      </div>
+      <div class="pair-info">
+        ${taken
+          ? `<div class="pair-name">${d.name.split(' ').slice(0,2).join(' ')}</div>
+             <span class="pair-paid-badge ${d.paid==='si'?'paid-si':'paid-no'}">${d.paid==='si'?'✓ Pagó':'⏳ Pend.'}</span>`
+          : `<div class="pair-free-label">Toca para apartar</div>`
+        }
+      </div>
+      <span class="pair-status">${taken ? (d.paid==='si' ? '✅' : '⏳') : ''}</span>
+    `;
+    grid.appendChild(div);
+  });
+  applyFilter();
+  renderList();
+}
+
+function applyFilter() {
+  const s = document.getElementById('search-in').value.toLowerCase().trim();
+  PAIRS.forEach(([a,b], idx) => {
+    const el = document.getElementById('pt-'+idx);
+    if (!el) return;
+    const d = tickets[idx];
+    const taken = !!d;
+    let show = true;
+    if (filterMode==='free' && taken) show=false;
+    if (filterMode==='taken' && !taken) show=false;
+    if (s) {
+      const nm = d && d.name.toLowerCase().includes(s);
+      const na = a.includes(s) || b.includes(s);
+      const ph = d && d.phone && d.phone.includes(s);
+      if (!nm && !na && !ph) show=false;
+    }
+    el.classList.toggle('hidden', !show);
+  });
+}
+function filterTickets() { applyFilter(); }
+function setFilter(f) {
+  filterMode=f;
+  ['all','free','taken'].forEach(id => document.getElementById('f-'+id).classList.toggle('active',id===f));
+  applyFilter();
+}
+
+function openModal(idx) {
+  currentIdx=idx; paidSel=null;
+  const [a,b]=PAIRS[idx];
+  document.getElementById('m-n1').textContent=a;
+  document.getElementById('m-n2').textContent=b;
+  document.getElementById('m-name').value='';
+  document.getElementById('m-phone').value='';
+  document.getElementById('r-si').className='radio-btn';
+  document.getElementById('r-no').className='radio-btn';
+  document.getElementById('method-f').style.display='none';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(()=>document.getElementById('m-name').focus(),120);
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); currentIdx=null; }
+
+function selPago(v) {
+  paidSel=v;
+  document.getElementById('r-si').className='radio-btn'+(v==='si'?' sel-si':'');
+  document.getElementById('r-no').className='radio-btn'+(v==='no'?' sel-no':'');
+  document.getElementById('method-f').style.display=v==='si'?'block':'none';
+}
+
+function registerTicket() {
+  const name=document.getElementById('m-name').value.trim();
+  const phone=document.getElementById('m-phone').value.trim();
+  if (!name) { toast('⚠️ Escribe el nombre del participante'); return; }
+  if (!paidSel) { toast('⚠️ Selecciona si ya pagó o no'); return; }
+  const method=paidSel==='si'?document.getElementById('m-method').value:'Pendiente';
+  tickets[currentIdx]={name,phone,paid:paidSel,method};
+  closeModal(); renderGrid(); updateStats();
+  const [a,b]=PAIRS[currentIdx];
+  toast(`✅ Boleto ${a}-${b} registrado para ${name.split(' ')[0]}`);
+}
+
+function renderList() {
+  const list=document.getElementById('p-list');
+  const entries=Object.entries(tickets).sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
+  if (!entries.length) {
+    list.innerHTML='<div class="empty-msg">Sin participantes aún.<br>¡Toca un boleto para registrar!</div>';
+    return;
+  }
+  list.innerHTML=entries.map(([idx,d])=>{
+    const [a,b]=PAIRS[parseInt(idx)];
+    return `<div class="p-row">
+      <div class="p-nums">
+        <span class="p-n">${a}</span>
+        <span class="p-sep">—</span>
+        <span class="p-n">${b}</span>
+      </div>
+      <div class="p-info">
+        <div class="p-name">${d.name}</div>
+        <div class="p-phone">${d.phone||'—'}</div>
+      </div>
+      <span class="p-paid ${d.paid==='si'?'paid-si':'paid-no'}">${d.paid==='si'?'✓ Pagó':'⏳ Pend.'}</span>
+      <span class="p-method">${d.method}</span>
+      <button class="p-del" onclick="delTicket(${idx})" title="Liberar">✕</button>
+    </div>`;
+  }).join('')+'<div style="height:10px"></div>';
+}
+
+function delTicket(idx) {
+  const [a,b]=PAIRS[parseInt(idx)];
+  if (!confirm(`¿Liberar boleto ${a}-${b} de ${tickets[idx]?.name}?`)) return;
+  delete tickets[idx]; renderGrid(); updateStats();
+  toast(`🗑️ Boleto ${a}-${b} liberado`);
+}
+
+function updateStats() {
+  const total=Object.keys(tickets).length;
+  const paid=Object.values(tickets).filter(t=>t.paid==='si').length;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-paid').textContent=paid;
+  document.getElementById('s-pend').textContent=total-paid;
+  document.getElementById('s-free').textContent=50-total;
+}
+
+function resetAll() {
+  if (!confirm('¿Reiniciar toda la rifa? Se borrarán todos los registros.')) return;
+  tickets={}; renderGrid(); updateStats(); toast('🔄 Rifa reiniciada');
+}
+
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+document.getElementById('modal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+init();
+</script>
+</body>
+</html>
